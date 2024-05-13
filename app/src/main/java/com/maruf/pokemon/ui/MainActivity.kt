@@ -12,6 +12,7 @@ import com.maruf.pokemon.databinding.ActivityMainBinding
 import com.maruf.pokemon.network.DataState
 import com.maruf.pokemon.network.Pokemon
 import com.maruf.pokemon.ui.adapter.PokemonImageAdapter
+import com.maruf.pokemon.utils.Constants
 import com.maruf.pokemon.viewmodel.PokemonViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
@@ -19,9 +20,14 @@ import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    lateinit var binding: ActivityMainBinding
-    private val pAdapter by lazy { PokemonImageAdapter() }
+    private lateinit var binding: ActivityMainBinding
+    private val pokemonImageAdapter by lazy { PokemonImageAdapter() }
     private val viewModel: PokemonViewModel by viewModels()
+
+    companion object{
+        const val FIRST_INDEX = 0
+        const val SECOND_INDEX = 1
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,10 +62,11 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun setUiData(pokemonList: List<Pokemon>?) {
-        pokemonList?.let { pAdapter.updateList(it) }
-        binding.carouselRecyclerview.adapter = pAdapter
+        pokemonList?.let { pokemonImageAdapter.updateList(it) }
+        binding.carouselRecyclerview.adapter = pokemonImageAdapter
         val pos = binding.carouselRecyclerview.getSelectedPosition()
         setPokemonDetails(pokemonList, pos)
+        pokemonImageAdapter.setSelectedItemPosition(pos)
         binding.carouselRecyclerview.apply {
             setAlpha(true)
             setInfinite(true)
@@ -68,24 +75,23 @@ class MainActivity : AppCompatActivity() {
             CarouselLayoutManager.OnSelected {
             @SuppressLint("SetTextI18n")
             override fun onItemSelected(position: Int) {
-
                 setPokemonDetails(pokemonList, position)
+                pokemonImageAdapter.setSelectedItemPosition(position)
             }
         })
     }
 
     @SuppressLint("SetTextI18n")
     private fun setPokemonDetails(pokemonList: List<Pokemon>?, position: Int) {
-        binding.name.text = pokemonList?.get(position)?.name ?: "unknown"
-        binding.height.text =
-            "Height: ${pokemonList?.get(position)?.height?.toString() ?: "unknown"}"
+        binding.name.text = pokemonList?.get(position)?.name ?: Constants.UNKNOWN
+        "Height: ${pokemonList?.get(position)?.height?.toString() ?: Constants.UNKNOWN}".also { binding.height.text = it }
         binding.weight.text =
-            "Weight: ${pokemonList?.get(position)?.weight?.toString() ?: "unknown"}"
-        binding.type.text = pokemonList?.get(position)?.types?.get(0)?.type?.name?.let { type1 ->
-            pokemonList[position].types?.getOrNull(1)?.type?.name?.let { type2 ->
-                "Type: $type1/$type2"
-            } ?: "Type: $type1"
-        } ?: "unknown"
+            "Weight: ${pokemonList?.get(position)?.weight?.toString() ?: Constants.UNKNOWN}"
+        binding.type.text = pokemonList?.get(position)?.types?.get(FIRST_INDEX)?.type?.name?.let { firstType ->
+            pokemonList[position].types?.getOrNull(SECOND_INDEX)?.type?.name?.let { secondType ->
+                "Type: $firstType/$secondType"
+            } ?: "Type: $firstType"
+        } ?:Constants.UNKNOWN
 
     }
 

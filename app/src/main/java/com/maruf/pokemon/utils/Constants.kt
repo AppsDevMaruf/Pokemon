@@ -7,6 +7,8 @@ class Constants {
 
         private const val VERSION = "v2/"
         const val BASE_URL = "https://pokeapi.co/api/$VERSION"
+        const val UNKNOWN = "unknown"
+
 
 
     }
