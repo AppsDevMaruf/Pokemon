@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="character"
+            type="com.maruf.pokemon.network.Pokemon" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:padding="8dp">
+
+        <com.jackandphantom.carouselrecyclerview.view.ReflectionViewContainer
+            android:id="@+id/imageViewContainer"
+            android:layout_width="160dp"
+            android:layout_height="180dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:reflect_gap="15dp">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/listItemImage"
+                loadImageFromUrl="@{character.Sprites.frontDefault}"
+                android:layout_width="160dp"
+                android:layout_height="180dp"
+                android:contentDescription="@string/todo"
+                android:padding="8dp"
+                android:background="@color/white"
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/rounded_corners_8dp"
+                app:strokeColor="@color/card_back"
+                tools:src="@drawable/ic_error_placeholder" />
+
+
+        </com.jackandphantom.carouselrecyclerview.view.ReflectionViewContainer>
+
+        <TextView
+            android:id="@+id/id"
+            setId="@{character.id.toString()}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/imageViewContainer"
+            app:layout_constraintEnd_toEndOf="@+id/imageViewContainer"
+            app:layout_constraintStart_toStartOf="@+id/imageViewContainer"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.9" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
