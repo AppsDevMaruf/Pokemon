@@ -6,12 +6,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.maruf.pokemon.databinding.ImageListItemBinding
 import com.maruf.pokemon.network.Pokemon
-import com.maruf.pokemon.ui.MainActivity
 import com.maruf.pokemon.utils.DiffCallback
+
 
 class PokemonImageAdapter : RecyclerView.Adapter<PokemonImageAdapter.ImageViewHolder>() {
     private var pokemonList = emptyList<Pokemon>()
-    private var selectedItemPosition = RecyclerView.NO_POSITION
     fun updateList(list: List<Pokemon>) {
         val diffCallback = DiffCallback(pokemonList, list)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
@@ -19,6 +18,7 @@ class PokemonImageAdapter : RecyclerView.Adapter<PokemonImageAdapter.ImageViewHo
         diffResult.dispatchUpdatesTo(this)
     }
 
+    private var middlePosition: Int = 0
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
 
         val view = ImageListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -26,28 +26,42 @@ class PokemonImageAdapter : RecyclerView.Adapter<PokemonImageAdapter.ImageViewHo
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
-        holder.bind(pokemonList[position], position == selectedItemPosition)
+
+
+        // Check if the current position is the middle one
+        if (position == middlePosition) {
+            // Apply stroke only to the middle item
+            holder.binding.listItemImage.strokeWidth = 4f
+        } else {
+            // Remove background for other items
+            holder.binding.listItemImage.strokeWidth = 0f
+        }
+
+        holder.bind(pokemonList[position])
     }
 
     override fun getItemCount(): Int {
         return pokemonList.size
     }
 
-    fun setSelectedItemPosition(position: Int) {
-        val previousPosition = selectedItemPosition
-        selectedItemPosition = position
-        notifyItemChanged(previousPosition)
-        notifyItemChanged(selectedItemPosition)
-    }
-
-    class ImageViewHolder(val binding: ImageListItemBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(pokemon: Pokemon, isSelected: Boolean) {
-            binding.character = pokemon
-            binding.listItemImage.strokeWidth = if (isSelected) 4F else 0F // Change stroke width based on selection
+    class ImageViewHolder(val binding: ImageListItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(character: Pokemon) {
+            binding.character = character
             binding.executePendingBindings()
         }
-
     }
 
+    // Method to set the middle position
+    fun setMiddlePosition(position: Int, recyclerView: RecyclerView) {
 
+        recyclerView.post {
+            middlePosition = position
+            notifyDataSetChanged()
+        }
+
+
+
+
+    }
 }

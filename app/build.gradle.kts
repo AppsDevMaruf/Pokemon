@@ -79,4 +79,7 @@ dependencies {
     implementation(libs.dagger.hilt)
     kapt(libs.dagger.hilt.compiler)
 
+    //lottie
+    implementation(libs.lottie)
+
 }
